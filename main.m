@@ -1,3 +1,3 @@
 clc;
-close all;
-yatzy(10000000, false);
+close all
+yatzy(10000, false);

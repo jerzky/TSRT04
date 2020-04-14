@@ -1,13 +1,14 @@
 function yatzy(count, debug)
     data = monteCarlo(count, debug);
     histogram(data, 'BinWidth', 1)
-    mean = sum(data) / count;
-    variance = 1 / (count - 1) * sum((data - mean).^2);
-    fprintf('The mean is: %.2f and the variance: %.2f\n', mean, variance); 
+    mean =  1 / count * sum(data);
+    variance = (1 / (count - 1)) * sum((data - mean).^2);
+    fprintf('The mean is: %.2f and the variance: %.2f\n', mean, variance);
+    fprintf('The max is: %d and the min: %d\n', max(data), min(data));
     hold on;
-    normalCurve = normal(50) * count;
+    normalCurve = normal(max(data)) * count;
     plot(normalCurve, 'LineWidth', 2);
-
+   
 end
 
 function result = normal(count)
@@ -29,7 +30,7 @@ end
 %of times it will perform the simulation, i.e get five of a kind
 function returnValue = monteCarlo(count, debug)
     fprintf('Simulating %d yatzy rounds\n', count);
-    returnValue = zeros(1, count);
+    returnValue = zeros(1, count);     
     for i = 1:count
         returnValue(i) = fiveDies(debug);
     end
