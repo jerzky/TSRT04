@@ -63,8 +63,7 @@ end
 
 %Simulates die throws, count is the number of dies thrown.
 function returnValue = simulateThrowDie(count, debug)
-    vector = rand(1, count) * 6;   
-    returnValue = ceil(vector);  
+    returnValue = randi([1 6],1 , count);    
     if(debug)
         fmt = ['Threw %d die(s) and got: ' repmat(' %1.0f ',1,numel(returnValue)) '\n'];
         fprintf(fmt, count, returnValue)
