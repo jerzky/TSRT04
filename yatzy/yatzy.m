@@ -1,16 +1,22 @@
-function yatzy(count, debug)
+function [data_mean, data_variance] = yatzy(count, debug)  
+    %Perform the MonteCarlo simulation
     data = monteCarlo(count, debug);
+    %Plot the simulation
     histogram(data, 'BinWidth', 1)
-    mean =  1 / count * sum(data);
-    variance = (1 / (count - 1)) * sum((data - mean).^2);
-    fprintf('The mean is: %.2f and the variance: %.2f\n', mean, variance);
+    data_mean = mean(data, 'all');
+    data_variance = var(data);
     fprintf('The max is: %d and the min: %d\n', max(data), min(data));
     hold on;
+    %Calculate the analytic solution
     normalCurve = normal(max(data)) * count;
+    %Plot the analytic solution
     plot(normalCurve, 'LineWidth', 2);
-   
+    legend({'Simulation (Monte Carlo)', 'Analytic solution'});
+    xlabel('Number of throws to get yatzy');
+    ylabel('Frequency');
+    hold off;
 end
-
+%This function will calculate the normal for getting a yatzy.
 function result = normal(count)
     A = [0  (1/6)   (1/36)  (1/216)     (1/1296);
          0  (5/6)   (10/36) (15/216)    (25/1296);
@@ -27,15 +33,19 @@ end
 
 
 %This function will perfrom a Monte Carlo simulation, count is the number 
-%of times it will perform the simulation, i.e get five of a kind
-function returnValue = monteCarlo(count, debug)
-    fprintf('Simulating %d yatzy rounds\n', count);
-    returnValue = zeros(1, count);     
+%of times it will perform the simulation
+function returnValue = monteCarlo(count, debug)  
+    returnValue = zeros(1, count);    
+    fprintf('Simulating %d yatzy rounds\n', count);  
+    startTime = cputime;
     for i = 1:count
-        returnValue(i) = fiveDies(debug);
+        returnValue(i) = fiveDies(debug); 
     end
-    fprintf('Done!\n');
+    fprintf('\nDone!\n');
+    fprintf('The time it took to run the simulation was: %.1f seconds\n\n', cputime - startTime);
 end
+
+
 
 %Will throw the dies until it gets five of a kind.
 function throwCount = fiveDies(debug)
@@ -63,8 +73,7 @@ end
 
 %Simulates die throws, count is the number of dies thrown.
 function returnValue = simulateThrowDie(count, debug)
-    vector = rand(1, count) * 6;   
-    returnValue = ceil(vector);  
+    returnValue = randi([1 6], 1, count);   
     if(debug)
         fmt = ['Threw %d die(s) and got: ' repmat(' %1.0f ',1,numel(returnValue)) '\n'];
         fprintf(fmt, count, returnValue)
